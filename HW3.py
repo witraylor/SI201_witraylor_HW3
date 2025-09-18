@@ -24,6 +24,7 @@ class FortuneCookieJar:
     """
 
     def __init__(self, fortunes):
+        self.fortunes = fortunes
         """
         Initialize a new FortuneCookieJar object.
 
@@ -35,6 +36,7 @@ class FortuneCookieJar:
         pass
 
     def __str__(self):
+        return "-".join(self.fortunes)
         """
         Return a single string with all fortunes in fortune_slips joined by dashes ('-').
         If fortune_slips is empty, return an empty string "".
@@ -46,6 +48,21 @@ class FortuneCookieJar:
         pass
 
     def assign_fortune(self, name):
+        name_pos = None
+        if name == self.name:
+            name_pos = name_roster.index(name)
+            fortune = fortune_slips[dealt_indices[name_pos]]
+            return f"That name already has a fortune: {fortune}"
+        else:
+            indices = []
+            for num in range(0,(len(fortune_slips) - 1)):
+                if num in dealt_indices:
+                    pass
+                else: indices.append(num)
+            if indices == []:
+                return "The jar is empty—no fortunes left to assign."
+
+
         """
         Assign (or re-report) a fortune for `name` WITHOUT using dictionaries.
 

@@ -23,8 +23,10 @@ class FortuneCookieJar:
       - dealt_indices[k] is the index of the fortune for name_roster[k]
     """
 
-    def __init__(self, fortunes):
-        self.fortunes = fortunes
+    def __init__(self, fortune_slips, name_roster, dealt_indices):
+        self.fortune_slips = fortune_slips
+        self.name_roster = name_roster
+        self.dealt_indices = dealt_indices
         """
         Initialize a new FortuneCookieJar object.
 
@@ -49,24 +51,24 @@ class FortuneCookieJar:
 
     def assign_fortune(self, name):
         name_pos = None
-        if name == self.name:
+
+        if name in self.name_roster:
             name_pos = name_roster.index(name)
-            fortune = fortune_slips[dealt_indices[name_pos]]
-            return f"That name already has a fortune: {fortune}"
-        else:
-            indices = []
-            rand_num = random.randrange(0,(len(fortune_slips) - 1))
-            if rand_num in dealt_indices:
-                pass
-            else: 
-                name_roster.append(name)
-                indices.append(num)
-                name_pos = name_roster.index(name)
-                fortune = fortune_slips[dealt_indices[name_pos]]
-                return fortune
-            for num in indices:
-                if rand_num == num:
-                    return "The jar is empty—no fortunes left to assign."
+            fortune = self.fortune_slips[dealt_indices[name_pos]]
+            return f"That name already has a fortune: {self.fortune_slips[self.dealt_indices[name_pos]]}"
+        
+        available_indices = []
+        for i in range(len(self.fortune_slips)):
+            if i not in self.dealt_indices:
+                available_indices.append(i)
+
+        if not available_indices:
+            return "The jar is empty—no fortunes left to assign."
+        chosen_index = random.randrange(available_indices)
+        rand_num = random.randrange(0,(len(self.fortune_slips) - 1))
+        self.name_roster.append(name)
+        self.dealt_indices.append(chosen_index)
+        return self.fortune_slips[chosen_index]
 
 
         """
@@ -100,6 +102,26 @@ class FortuneCookieJar:
         pass
 
     def distribute_session(self):
+        turn = 1
+        while True:
+            user_input = input(f"Turn {turn} - Enter a name (or a comma-separated list), or type 'list' or 'Done': ")
+            print(user_input)
+
+            if user_input == "Done":
+                print("Goodbye! See you soon.")
+                break
+            elif user_input == "list":
+                for i, name in enumerate(self.name_roster):
+                    fortune = self.fortune_slips[self.dealt_indices[i]]
+                    print(f"{name}: {fortune}")
+            else:
+                names = [name.strip() for name in user_input.split(",") if name.strip()]
+                for name in names:
+                    print(self.assign_fortune(name))
+    
+            turn += 1
+
+
         """
         Interactive loop with TWO added features relative to a minimal loop:
           1) Accept comma-separated names in one line
@@ -132,6 +154,15 @@ class FortuneCookieJar:
         pass
 
     def tally_distribution(self):
+        if not self.dealt_indices:
+            print("Empty")
+            return []
+        frequency_list = []
+        for i in range(len(self.fortune_slips)):
+            frequency_list.append(0)
+        for i in self.dealt_indices:
+            frequency_list[i] += 1
+        
         """
         Summarize fortune usage across unique names using ONLY lists.
 

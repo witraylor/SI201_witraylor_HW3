@@ -55,12 +55,18 @@ class FortuneCookieJar:
             return f"That name already has a fortune: {fortune}"
         else:
             indices = []
-            for num in range(0,(len(fortune_slips) - 1)):
-                if num in dealt_indices:
-                    pass
-                else: indices.append(num)
-            if indices == []:
-                return "The jar is empty—no fortunes left to assign."
+            rand_num = random.randrange(0,(len(fortune_slips) - 1))
+            if rand_num in dealt_indices:
+                pass
+            else: 
+                name_roster.append(name)
+                indices.append(num)
+                name_pos = name_roster.index(name)
+                fortune = fortune_slips[dealt_indices[name_pos]]
+                return fortune
+            for num in indices:
+                if rand_num == num:
+                    return "The jar is empty—no fortunes left to assign."
 
 
         """

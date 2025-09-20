@@ -1,7 +1,7 @@
 # Name: Willow Traylor
 # Student ID: 67975434
 # Email: wtraylor@gmail.com
-# Who or what you worked with on this homework (including generative AI like ChatGPT):
+# Who or what you worked with on this homework (including generative AI like ChatGPT): Claire Fuller
 
 import random
 import io
@@ -23,10 +23,10 @@ class FortuneCookieJar:
       - dealt_indices[k] is the index of the fortune for name_roster[k]
     """
 
-    def __init__(self, fortune_slips, name_roster, dealt_indices):
-        self.fortune_slips = fortune_slips
-        self.name_roster = name_roster
-        self.dealt_indices = dealt_indices
+    def __init__(self, fortunes):
+        self.fortune_slips = fortunes
+        self.name_roster = []
+        self.dealt_indices = []
         """
         Initialize a new FortuneCookieJar object.
 
@@ -38,7 +38,11 @@ class FortuneCookieJar:
         pass
 
     def __str__(self):
-        return "-".join(self.fortunes)
+        if self.fortune_slips:
+            return "-".join(self.fortune_slips)
+        else:
+            return ""
+
         """
         Return a single string with all fortunes in fortune_slips joined by dashes ('-').
         If fortune_slips is empty, return an empty string "".
@@ -53,8 +57,8 @@ class FortuneCookieJar:
         name_pos = None
 
         if name in self.name_roster:
-            name_pos = name_roster.index(name)
-            fortune = self.fortune_slips[dealt_indices[name_pos]]
+            name_pos = self.name_roster.index(name)
+            fortune = self.fortune_slips[self.dealt_indices[name_pos]]
             return f"That name already has a fortune: {self.fortune_slips[self.dealt_indices[name_pos]]}"
         
         available_indices = []
@@ -64,8 +68,7 @@ class FortuneCookieJar:
 
         if not available_indices:
             return "The jar is empty—no fortunes left to assign."
-        chosen_index = random.randrange(available_indices)
-        rand_num = random.randrange(0,(len(self.fortune_slips) - 1))
+        chosen_index = random.choice(available_indices)
         self.name_roster.append(name)
         self.dealt_indices.append(chosen_index)
         return self.fortune_slips[chosen_index]
@@ -157,13 +160,23 @@ class FortuneCookieJar:
         if not self.dealt_indices:
             print("Empty")
             return []
-        frequency_list = []
-        for i in range(len(self.fortune_slips)):
-            frequency_list.append(0)
+        
+        frequency_list = [0] * len(self.fortune_slips)
         for i in self.dealt_indices:
             frequency_list[i] += 1
-        
-        """
+
+        freq_fortunes = []
+        for i, fortune in enumerate(self.fortune_slips):
+            freq = frequency_list[i]
+            freq_fortunes.append((freq, fortune.lower()))
+
+        freq_fortunes.sort(key=lambda x: (-x[0], x[1]))
+        freq_fortune_lst = []
+        for freq, fortune in freq_fortunes:
+            freq_fortune_lst.append(f"{freq} - {fortune}")
+        return freq_fortune_lst
+    
+    """
         Summarize fortune usage across unique names using ONLY lists.
 
         Steps:
@@ -180,7 +193,7 @@ class FortuneCookieJar:
             list[str]: formatted frequency lines
         """
         # TODO: Implement per spec
-        pass
+    pass
 
 
 def main():
@@ -198,6 +211,12 @@ def main():
         "Ask for Help",
         "Change is Coming",
         "Enjoy the Little Things",
+        "Good Things Come to Those Who Wait",
+        "Believe in yourself and others will too.",
+        "Disbelief destroys the magic",
+        "Don't confuse recklessness with confidence.",
+        "Failure is the chance to do better next time.",
+        "In order to take, one must first give."
     ]
 
     # TODO: Construct the jar, run the session, then show tallies
